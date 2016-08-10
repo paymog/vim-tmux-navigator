@@ -11,6 +11,10 @@ if !exists("g:tmux_navigator_save_on_switch")
   let g:tmux_navigator_save_on_switch = 0
 endif
 
+if !exists("g:tmux_navigator_save_all_buffers_on_switch")
+  let g:tmux_navigator_save_all_buffers_on_switch = 0
+endif
+
 function! s:TmuxOrTmateExecutable()
   return (match($TMUX, 'tmate') != -1 ? 'tmate' : 'tmux')
 endfunction
@@ -69,10 +73,16 @@ function! s:TmuxAwareNavigate(direction)
   if tmux_last_pane || nr == winnr()
     if g:tmux_navigator_save_on_switch
       try
-        update
-      catch /^Vim\%((\a\+)\)\=:E32/
+        if g:tmux_navigator_save_all_buffers_on_switch
+          wall "  save all the buffers. See :help wall
+        else
+          update " save the active buffer. See :help update
+        endif
+      catch /^Vim\%((\a\+)\)\=:E32/ " catches the no file name error thrown by update
+      catch /^Vim\%((\a\+)\)\=:E141/ " catches the no file name error thrown by wall
       endtry
     endif
+
     let args = 'select-pane -' . tr(a:direction, 'phjkl', 'lLDUR')
     silent call s:TmuxCommand(args)
     if s:NeedsVitalityRedraw()

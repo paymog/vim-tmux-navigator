@@ -113,7 +113,11 @@ Left would be created with `nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>`.
 
     let g:tmux_navigator_save_on_switch = 1
 
-This will execute the update command on leaving vim to a tmux pane. Default is Zero
+This will execute the `update` command on leaving vim to a tmux pane. Default is Zero
+
+    let g:tmux_navigator_save_all_buffers_on_switch = 1
+
+This will execute the `wall` command on leaving vim to a tmux pane. The `wall` command saves all buffers whereas `update` only saves the active buffer. This has no effect if `g:tmux_navigator_save_on_switch` has a value of 0. Default is Zero.
 
 #### Tmux
 
